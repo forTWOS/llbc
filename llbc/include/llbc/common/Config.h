@@ -175,6 +175,13 @@
 // Determine enable the unify pre-subscribe handler support or not.
 #define LLBC_CFG_COMM_ENABLE_UNIFY_PRESUBSCRIBE             1
 
+/**
+* \brief object pool about configs.
+*/
+//Default object pool reserve size
+#define LLBC_CFG_OBJECTPOOL_RESERVE_SIZE					128
+
+
 // The poller model config(Platform specific).
 //  Alloc set one of the follow configs(string format, case insensitive).
 //   "SelectPoller" : Use select poller(All platform available).
