@@ -72,7 +72,9 @@
 // Minimum stack size.
 #define LLBC_CFG_THREAD_MINIMUM_STACK_SIZE                  (1 * 1024 * 1024)
 // Message block default size.
-#define LLBC_CFG_THREAD_MSG_BLOCK_DFT_SIZE                  (1024)
+#define LLBC_CFG_THREAD_MSG_BLOCK_DFT_SIZE                  (128)
+//Message block allocate default size.
+#define LLBC_CFG_THREAD_MSG_BLOCK_ALLOC_DFT_SIZE          0
 // If you want debug guardians, enable this config option.
 #define LLBC_CFG_THREAD_GUARD_DEBUG                         0
 

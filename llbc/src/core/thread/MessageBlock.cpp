@@ -79,6 +79,9 @@ int LLBC_MessageBlock::Allocate(size_t size)
         return LLBC_FAILED;
     }
 
+	if (LIKELY(size == 0))
+		size = _size;
+
     Resize(_size + size);
 
     return LLBC_OK;

@@ -66,7 +66,7 @@ public:
      * @param[in] size - size.
      * @return int - return 0 if success, otherwise return -1.
      */
-    int Allocate(size_t size = LLBC_CFG_THREAD_MSG_BLOCK_DFT_SIZE);
+	int Allocate(size_t size = LLBC_CFG_THREAD_MSG_BLOCK_ALLOC_DFT_SIZE);
 
 public:
     /**
