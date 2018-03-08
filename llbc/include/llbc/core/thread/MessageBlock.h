@@ -181,13 +181,7 @@ public:
      */
     void Swap(LLBC_MessageBlock *another);
 
-    /**
-     * Clone message block.
-     * @return LLBC_MessageBlock * - new message block.
-     */
-    LLBC_MessageBlock *Clone() const;
-
-    /**
+     /**
      * Get previous message block.
      * @return LLBC_MessageBlock * - previous message block.
      */

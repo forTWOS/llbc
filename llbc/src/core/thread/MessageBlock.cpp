@@ -255,27 +255,6 @@ void LLBC_MessageBlock::Swap(LLBC_MessageBlock *another)
     LLBC_Swap(_next, another->_next);
 }
 
-LLBC_MessageBlock *LLBC_MessageBlock::Clone() const
-{
-    LLBC_MessageBlock *clone;
-    if (IsAttach())
-    {
-        clone = new LLBC_MessageBlock(_buf, _size);
-    }
-    else
-    {
-        clone = new LLBC_MessageBlock(_size);
-        memcpy(clone->_buf, _buf, _size);
-    }
-
-    clone->_readPos = _readPos;
-    clone->_writePos = _writePos;
-    clone->_prev = _prev;
-    clone->_next = _next;
-
-    return clone;
-}
-
 LLBC_MessageBlock *LLBC_MessageBlock::GetPrev() const
 {
     return _prev;
