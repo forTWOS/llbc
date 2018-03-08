@@ -30,6 +30,10 @@
 
 __LLBC_NS_BEGIN
 class LLBC_SockAddr_IN;
+
+template <typename Rtn, typename Arg1>
+class LLBC_IDelegate1;
+
 __LLBC_NS_END
 
 /**
@@ -352,6 +356,9 @@ public:
      */
     void SetDeleteDataProc(DeleteDataProc proc);
 
+	template <typename Object>
+	void SetDeleteDalegateMeth(Object *obj, void (Object::*meth)(void *));
+
     /**
      * Insert overlapped.
      * @param[in] ol - overlapped.
@@ -387,9 +394,14 @@ private:
     _OLContainer _ols;
 
     DeleteDataProc _delDataProc;
+
+	LLBC_IDelegate1<void, void *> *_delDataMeth;
 };
 typedef LLBC_OverlappedGroup * LLBC_POverlappedGroup;
 
+
 __LLBC_NS_END
+
+#include "llbc/common/SocketDataTypeImpl.h"
 
 #endif // !__LLBC_COM_SOCKET_DATA_TYPE_H__
