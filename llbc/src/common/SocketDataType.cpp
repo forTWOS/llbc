@@ -291,11 +291,13 @@ LLBC_OverlappedGroup::LLBC_OverlappedGroup()
 , _ols()
 
 , _delDataProc(NULL)
+, _delDataMeth(NULL)
 {
 }
 
 LLBC_OverlappedGroup::~LLBC_OverlappedGroup()
 {
+	LLBC_Delete(_delDataMeth);
 }
 
 LLBC_SocketHandle LLBC_OverlappedGroup::GetSocketHandle() const
@@ -363,7 +365,15 @@ void LLBC_OverlappedGroup::ClearOverlappedMembers(LLBC_POverlapped ol)
     {
         (*_delDataProc)(ol->data);
         ol->data = NULL;
+		return;
     }
+	
+	if (ol->data && _delDataMeth)
+	{
+		_delDataMeth->Invoke(ol->data);
+		ol->data = NULL;
+		return;
+	}
 }
 
 __LLBC_NS_END
