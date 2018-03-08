@@ -35,7 +35,7 @@ int TestCase_Core_ObjectPool::Run(int argc, char *argv[])
 {
     std::cout <<"core/objectpool test:" <<std::endl;
 
-	LLBC_ObjectPool<LLBC_MessageBlock> *objpool = new LLBC_ObjectPool<LLBC_MessageBlock>(3);
+	LLBC_ObjectPool < LLBC_MessageBlock, true > *objpool = new LLBC_ObjectPool<LLBC_MessageBlock, true>(3);
 	LLBC_MessageBlock *obj1 = objpool->Pop();
 	LLBC_MessageBlock *obj2 = objpool->Pop();
 	LLBC_MessageBlock *obj3 = objpool->Pop();
