@@ -29,6 +29,7 @@
 #include "llbc/comm/protocol/RawProtocol.h"
 
 #include "llbc/comm/IService.h"
+#include "llbc/comm/Session.h"
 
 __LLBC_NS_BEGIN
 
@@ -54,13 +55,11 @@ int LLBC_RawProtocol::Send(void *in, void *&out, bool &removeSession)
 {
     LLBC_Packet *packet = reinterpret_cast<LLBC_Packet *>(in);
 
-    LLBC_MessageBlock *block = packet->GiveUp();
-    LLBC_Delete(packet);
+	LLBC_MessageBlock *block = _session->AllocMessageBlock();
+	block->Write(packet->GetPayload(), packet->GetPayloadLength());
+	LLBC_Delete(packet);
+	out = block;
 
-    if (!block)
-        return LLBC_OK;
-
-    out = block;
     return LLBC_OK;
 }
 
@@ -77,10 +76,10 @@ int LLBC_RawProtocol::Recv(void *in, void *&out, bool &removeSession)
     packet->Write(block->GetDataStartWithReadPos(), readableSize);
 
     // Delete this block.
-    LLBC_Delete(block);
+	_session->FreeMessageBlock(block); //LLBC_Delete(block);
 
     // Create output.
-    out = LLBC_New1(LLBC_MessageBlock, sizeof(LLBC_Packet *));
+	out = _session->AllocMessageBlock(); //LLBC_New1(LLBC_MessageBlock, sizeof(LLBC_Packet *));
     (reinterpret_cast<LLBC_MessageBlock *>(out))->Write(&packet, sizeof(LLBC_Packet *));
 
     return LLBC_OK;
