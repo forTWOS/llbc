@@ -21,17 +21,23 @@
 
 #ifdef __LLBC_CORE_OBJECTPOOL_OBJECTPOOL_H__
 
+#include "llbc/core/thread/SpinLock.h"
+
 __LLBC_NS_BEGIN
 
-template<typename T, typename LockType>
-inline LLBC_ObjectPool<T, LockType>::LLBC_ObjectPool(sint32 reserveSize /*= LLBC_CFG_OBJECTPOOL_RESERVE_SIZE*/)
+template<typename T, bool ThreadSafe>
+inline LLBC_ObjectPool<T, ThreadSafe>::LLBC_ObjectPool(sint32 reserveSize /*= LLBC_CFG_OBJECTPOOL_RESERVE_SIZE*/)
 : _reserveSize(reserveSize)
+, _lock(NULL)
 {
+	if (UNLIKELY(ThreadSafe))
+		_lock = new LLBC_SpinLock();
+
 	_objPool.reserve(_reserveSize);
 }
 
-template<typename T, typename LockType>
-inline LLBC_ObjectPool<T, LockType>::~LLBC_ObjectPool()
+template<typename T, bool ThreadSafe>
+inline LLBC_ObjectPool<T, ThreadSafe>::~LLBC_ObjectPool()
 {
 	for (_Iterator iter = _objPool.begin();
 		iter != _objPool.end();
@@ -40,28 +46,36 @@ inline LLBC_ObjectPool<T, LockType>::~LLBC_ObjectPool()
 		LLBC_XDelete(*iter);
 	}
 	_objPool.clear();
+	LLBC_XDelete(_lock);
 }
 
-template<typename T, typename LockType>
-inline T *LLBC_ObjectPool<T, LockType>::Pop()
+template<typename T, bool ThreadSafe>
+inline T *LLBC_ObjectPool<T, ThreadSafe>::Pop()
 {
-	LLBC_LockGuard guard(_lock);
+	if (UNLIKELY(ThreadSafe))
+		_lock->Lock();
+	
 	T *newobj = NULL;
 	if (_objPool.empty())
 		newobj = new T();
 	else
 		newobj = _PopFromCache();
+	
+	if (UNLIKELY(ThreadSafe))
+		_lock->Unlock();
 
 	return newobj;
 }
 
-template<typename T, typename LockType>
-inline void LLBC_ObjectPool<T, LockType>::Push(T *&o)
+template<typename T, bool ThreadSafe>
+inline void LLBC_ObjectPool<T, ThreadSafe>::Push(T *&o)
 {
 	if (UNLIKELY(!o))
 		return;
 
-	LLBC_LockGuard guard(_lock);
+	if (UNLIKELY(ThreadSafe))
+		_lock->Lock();
+
 	if (UNLIKELY(_objPool.size() >= _reserveSize))
 	{
 		_reserveSize *= 2;
@@ -69,10 +83,13 @@ inline void LLBC_ObjectPool<T, LockType>::Push(T *&o)
 	}
 	_objPool.push_back(o);
 	o = NULL;
+
+	if (UNLIKELY(ThreadSafe))
+		_lock->Unlock();
 }
 
-template<typename T, typename LockType>
-inline T *LLBC_ObjectPool<T, LockType>::_PopFromCache()
+template<typename T, bool ThreadSafe>
+inline T *LLBC_ObjectPool<T, ThreadSafe>::_PopFromCache()
 {
 	T *obj = _objPool.back();
 	_objPool.pop_back();
@@ -80,11 +97,11 @@ inline T *LLBC_ObjectPool<T, LockType>::_PopFromCache()
 	return obj;
 }
 
-template<typename T, typename LockType>
-inline void LLBC_ObjectPool<T, LockType>::_ReInitialize(T *o)
+template<typename T, bool ThreadSafe>
+inline void LLBC_ObjectPool<T, ThreadSafe>::_ReInitialize(T *o)
 {
 	//call object's ReInitialize func
-	//o->ReInitialize();			//TODO
+	o->ReInitialize();			//TODO
 }
 
 __LLBC_NS_END

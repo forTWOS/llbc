@@ -23,11 +23,17 @@
 #define __LLBC_CORE_OBJECTPOOL_OBJECTPOOL_H__
 
 #include "llbc/common/Common.h"
-#include "llbc/core/thread/DummyLock.h"
+
 
 __LLBC_NS_BEGIN
 
-template<typename T, typename LockType = LLBC_DummyLock>
+class LLBC_SpinLock;
+
+__LLBC_NS_END
+
+__LLBC_NS_BEGIN
+
+template<typename T, bool ThreadSafe = false>
 class LLBC_ObjectPool
 {
 public:
@@ -44,7 +50,7 @@ private:
 	void _ReInitialize(T *o);
 
 private:
-	LockType _lock;
+	LLBC_SpinLock *_lock;
 
 	size_t _reserveSize;
 
