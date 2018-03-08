@@ -37,6 +37,8 @@ class LLBC_IService;
 class LLBC_BasePoller;
 class LLBC_ProtocolStack;
 
+typedef LLBC_ObjectPool<LLBC_MessageBlock> MessageBlockPool;
+
 __LLBC_NS_END
 
 __LLBC_NS_BEGIN
@@ -259,6 +261,27 @@ public:
      */
     bool OnRecved(LLBC_MessageBlock *block);
 
+public:
+	/*
+	* Alloc MessageBlock from ObjectPool
+	* @return LLBC_MessageBlock *
+	*/
+	LLBC_MessageBlock *AllocMessageBlock();
+	
+	/*
+	* Free MessageBlock for ObjectPool
+	* @param[in] block - Need free MessageBlock ptr
+	*/
+	void FreeMessageBlock(LLBC_MessageBlock *block);
+
+	/*
+	* Use guard to free MessageBlock for ObjectPool
+	* @param[in] data - Need free MessageBlock ptr
+	*/
+	void GuardFreeMessageBlock(void *data);
+
+	MessageBlockPool *GetMessageBlockPool();
+
 private:
     int _id;
     int _acceptId;
@@ -272,6 +295,8 @@ private:
     LLBC_ProtocolStack *_protoStack;
 
     int _pollerType;
+
+	MessageBlockPool *_messagePool;
 };
 
 __LLBC_NS_END

@@ -228,7 +228,7 @@ int LLBC_ProtocolStack::RecvRaw(LLBC_MessageBlock *block, std::vector<LLBC_Packe
         return LLBC_OK;
 
     LLBC_MessageBlock *packetsBlock = reinterpret_cast<LLBC_MessageBlock *>(out);
-    LLBC_InvokeGuard guard(&LLBC_INL_NS __DeletePacketsBlock, packetsBlock);
+    LLBC_InvokeGuard guard(_session, &LLBC_Session::GuardFreeMessageBlock, (void *)packetsBlock);
 
     LLBC_Packet *packet;
     while (packetsBlock->Read(&packet, sizeof(LLBC_Packet *)) == LLBC_OK)

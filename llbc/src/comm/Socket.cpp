@@ -31,19 +31,8 @@ namespace
 {
     typedef LLBC_NS LLBC_PollerType _PollerType;
     typedef LLBC_NS LLBC_OverlappedOpcode _Opcode;
-
 }
 
-__LLBC_INTERNAL_NS_BEGIN
-
-void __OnOverlappedDelHook(void *data)
-{
-    if (data)
-        LLBC_Delete(reinterpret_cast<
-            LLBC_NS LLBC_MessageBlock *>(data));
-}
-
-__LLBC_INTERNAL_NS_END
 
 __LLBC_NS_BEGIN
 
@@ -70,10 +59,6 @@ LLBC_Socket::LLBC_Socket(LLBC_SocketHandle handle)
 {
     if (_handle == LLBC_INVALID_SOCKET_HANDLE)
         _handle = LLBC_CreateTcpSocket();
-
-#if LLBC_TARGET_PLATFORM_WIN32
-    _olGroup.SetDeleteDataProc(&LLBC_INL_NS __OnOverlappedDelHook);
-#endif
 }
 
 LLBC_Socket::~LLBC_Socket()
@@ -84,6 +69,8 @@ LLBC_Socket::~LLBC_Socket()
 void LLBC_Socket::SetSession(LLBC_Session *session)
 {
     _session = session;
+	_willSend.SetMessagePool(_session->GetMessageBlockPool());
+	_olGroup.SetDeleteDalegateMeth(_session, &LLBC_Session::GuardFreeMessageBlock);
 }
 
 int LLBC_Socket::GetPollerType() const
@@ -299,7 +286,7 @@ int LLBC_Socket::Send(const char *buf, int len)
 
 int LLBC_Socket::AsyncSend(const char *buf, int len)
 {
-    LLBC_MessageBlock *block = new LLBC_MessageBlock(len);
+	LLBC_MessageBlock *block = _session->AllocMessageBlock(); //new LLBC_MessageBlock(len);
     block->Write(buf, len);
 
     return AsyncSend(block);
@@ -309,7 +296,7 @@ int LLBC_Socket::AsyncSend(LLBC_MessageBlock *block)
 {
     if (_willSend.Append(block) != LLBC_OK)
     {
-        LLBC_XDelete(block);
+		_session->FreeMessageBlock(block); //LLBC_XDelete(block);
         return LLBC_FAILED;
     }
 
@@ -506,7 +493,7 @@ void LLBC_Socket::OnSend()
     if (ret != LLBC_OK && LLBC_GetLastError() != LLBC_ERROR_PENDING)
     {
         trace("LLBC_Socket::OnSend() call LLBC_SendEx() failed, reason: %s\n", LLBC_FormatLastError());
-        LLBC_Delete(reinterpret_cast<LLBC_MessageBlock *>(ol->data));
+		_session->FreeMessageBlock(reinterpret_cast<LLBC_MessageBlock *>(ol->data)); //LLBC_Delete(reinterpret_cast<LLBC_MessageBlock *>(ol->data));
 
         LLBC_Delete(ol);
         _session->OnClose();
@@ -533,7 +520,7 @@ void LLBC_Socket::OnRecv()
     int len = 0;
     bool recvFlag = false;
     
-    LLBC_MessageBlock *block = LLBC_New(LLBC_MessageBlock);
+	LLBC_MessageBlock *block = _session->AllocMessageBlock(); //LLBC_New(LLBC_MessageBlock);
     while ((len = LLBC_Recv(_handle,
                             block->GetDataStartWithWritePos(),
                             static_cast<int>(block->GetWritableSize()),

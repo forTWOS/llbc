@@ -29,6 +29,7 @@ __LLBC_NS_BEGIN
 
 LLBC_MessageBuffer::LLBC_MessageBuffer()
 : _head(NULL)
+, _messagePool(NULL)
 {
 }
 
@@ -64,7 +65,7 @@ size_t LLBC_MessageBuffer::Read(void *buf, size_t len)
             {
                 LLBC_MessageBlock *block = _head;
                 _head = _head->GetNext();
-                delete block;
+				_messagePool->Push(block); //delete block;
             }
 
             needReadLen = 0;
@@ -76,7 +77,7 @@ size_t LLBC_MessageBuffer::Read(void *buf, size_t len)
 
         LLBC_MessageBlock *block = _head;
         _head = _head->GetNext();
-        delete block;
+		_messagePool->Push(block); //delete block;
     }
 
     if (needReadLen > 0)
@@ -99,11 +100,11 @@ int LLBC_MessageBuffer::Write(const char *buf, size_t len)
         return LLBC_OK;
     }
 
-    LLBC_MessageBlock *block = new LLBC_MessageBlock(len);
+	LLBC_MessageBlock *block = _messagePool->Pop(); //new LLBC_MessageBlock(len);
     block->Write(buf, len);
     if (Append(block) != LLBC_OK)
     {
-        delete block;
+		_messagePool->Push(block); //delete block;
         return LLBC_FAILED;
     }
 
@@ -128,7 +129,7 @@ LLBC_MessageBlock *LLBC_MessageBuffer::MergeBuffersAndDetach()
             curBlock->GetDataStartWithReadPos(), curBlock->GetWritePos() - curBlock->GetReadPos());
         LLBC_MessageBlock *next = curBlock->GetNext();
 
-        delete curBlock;
+		_messagePool->Push(curBlock); //delete curBlock;
         curBlock = next;
     }
 
@@ -148,7 +149,7 @@ int LLBC_MessageBuffer::Append(LLBC_MessageBlock *block)
 
     if (UNLIKELY(block->GetReadableSize() == 0))
     {
-        LLBC_Delete(block);
+		_messagePool->Push(block); //LLBC_Delete(block);
         return LLBC_OK;
     }
 
@@ -189,7 +190,7 @@ size_t LLBC_MessageBuffer::Remove(size_t length)
             {
                 LLBC_MessageBlock *block = _head;
                 _head = _head->GetNext();
-                delete block;
+				_messagePool->Push(block); //delete block;
             }
 
             needRemoveLength = 0;
@@ -200,7 +201,7 @@ size_t LLBC_MessageBuffer::Remove(size_t length)
 
         LLBC_MessageBlock *block = _head;
         _head = _head->GetNext();
-        delete block;
+		_messagePool->Push(block); //delete block;
     }
 
     if (needRemoveLength > 0)
@@ -218,8 +219,13 @@ void LLBC_MessageBuffer::Cleanup()
     {
         block = _head;
         _head = _head->GetNext();
-        delete block;
+		_messagePool->Push(block); //delete block;
     }
+}
+
+void LLBC_MessageBuffer::SetMessagePool(MessageBlockPool *pool)
+{
+	_messagePool = pool;
 }
 
 __LLBC_NS_END

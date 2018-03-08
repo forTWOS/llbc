@@ -110,13 +110,17 @@ LLBC_Session::LLBC_Session()
 , _poller(NULL)
 
 , _protoStack(NULL)
+
+, _messagePool(NULL)
 {
+	_messagePool = new LLBC_ObjectPool<LLBC_MessageBlock>();
 }
 
 LLBC_Session::~LLBC_Session()
 {
     LLBC_XDelete(_socket);
     LLBC_XDelete(_protoStack);
+	LLBC_XDelete(_messagePool);
 }
 
 int LLBC_Session::GetId() const
@@ -322,6 +326,32 @@ bool LLBC_Session::OnRecved(LLBC_MessageBlock *block)
     }
 
     return true;
+}
+
+LLBC_MessageBlock *LLBC_Session::AllocMessageBlock()
+{
+	if (LIKELY(_messagePool))
+		return _messagePool->Pop();
+	
+	return NULL;
+}
+
+void LLBC_Session::FreeMessageBlock(LLBC_MessageBlock *block)
+{
+	if (LIKELY(_messagePool))
+		_messagePool->Push(block);
+}
+
+void LLBC_Session::GuardFreeMessageBlock(void *data)
+{
+	LLBC_MessageBlock *block = reinterpret_cast<LLBC_MessageBlock *>(data);
+	if (LIKELY(block && _messagePool))
+		_messagePool->Push(block);
+}
+
+MessageBlockPool *LLBC_Session::GetMessageBlockPool()
+{
+	return _messagePool;
 }
 
 __LLBC_NS_END

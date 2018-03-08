@@ -61,6 +61,16 @@ LLBC_MessageBlock::~LLBC_MessageBlock()
         LLBC_Free(_buf);
 }
 
+bool LLBC_MessageBlock::ReInitialize()
+{
+	_readPos = 0;
+	_writePos = 0;
+	_prev = NULL;
+	_next = NULL;
+
+	return true;
+}
+
 int LLBC_MessageBlock::Allocate(size_t size)
 {
     if (_attach)

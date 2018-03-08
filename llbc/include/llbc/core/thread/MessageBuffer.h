@@ -23,6 +23,7 @@
 #define __LLBC_CORE_THREAD_MESSAGE_BUFFER_H__
 
 #include "llbc/common/Common.h"
+#include "llbc/core/objectpool/Common.h"
 
 __LLBC_NS_BEGIN
 
@@ -30,6 +31,9 @@ __LLBC_NS_BEGIN
  * Pre-declare some classes.
  */
 class LLBC_MessageBlock;
+
+typedef LLBC_ObjectPool<LLBC_MessageBlock> MessageBlockPool;
+
 
 __LLBC_NS_END
 
@@ -93,8 +97,14 @@ public:
      */
     void Cleanup();
 
+public:
+
+	void SetMessagePool(MessageBlockPool *pool);
+
 private:
     LLBC_MessageBlock *_head;
+
+	MessageBlockPool *_messagePool;
 };
 
 __LLBC_NS_END

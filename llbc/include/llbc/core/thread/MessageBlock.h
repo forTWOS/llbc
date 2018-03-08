@@ -54,6 +54,13 @@ public:
     ~LLBC_MessageBlock();
 
 public:
+	/*
+	* ReInitialize MessageBlock for repeat use
+	* @return bool - true success, other fail
+	*/
+	bool ReInitialize(); 
+
+public:
     /**
      * Allocate new buffer size.
      * @param[in] size - size.
