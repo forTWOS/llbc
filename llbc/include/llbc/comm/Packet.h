@@ -32,6 +32,19 @@
 __LLBC_NS_BEGIN
 class LLBC_ICoder;
 class LLBC_Session;
+
+#define __LLBC_COMM_PACKET_EXTDATA_MEMBER(Num)    \
+						sint64 _extData##Num;	\
+						
+#define __LLBC_COMM_PACKET_EXTDATA_MEMBER_INIT(Num)\
+						_extData##Num(0)	\
+
+#define __LLBC_COMM_PACKET_EXTDATA_SET_AND_GET_FUNC(Num) \
+				template <typename T>		 \
+				T GetExtData##Num() const;	 \
+				template <typename T>	     \
+				void SetExtData##Num(const T &extData);
+
 __LLBC_NS_END
 
 __LLBC_NS_BEGIN
@@ -181,38 +194,10 @@ public:
     void RemoveFlags(int flags);
 
 public:
-    /**
-     * Get packet first extention data.
-     * @return sint64 - the first extension data.
-     */
-    const sint64 &GetExtData1() const;
-    /**
-     * Set packet first extension data.
-     * @param[in] extData1 - the first extension data.
-     */
-    void SetExtData1(const sint64 &extData1);
-
-    /**
-     * Get packet second extension data.
-     * @return sint64 - the second extension data.
-     */
-    const sint64 &GetExtData2() const;
-    /**
-     * Set packet second extension data.
-     * @param[in] extData2 - the second extension data.
-     */
-    void SetExtData2(const sint64 &extData2);
-
-    /**
-     * Get packet third extension data.
-     * @return sint64 - the third extension data.
-     */
-    const sint64 &GetExtData3() const;
-    /**
-     * Set packet third extension data.
-     * @param[in] extData2 - the third extension data.
-     */
-    void SetExtData3(const sint64 &extData3);
+	__LLBC_COMM_PACKET_EXTDATA_SET_AND_GET_FUNC(1);
+	__LLBC_COMM_PACKET_EXTDATA_SET_AND_GET_FUNC(2);
+	__LLBC_COMM_PACKET_EXTDATA_SET_AND_GET_FUNC(3);
+	
 public:
     /**
      * Set packet header.
@@ -490,9 +475,10 @@ private:
     LLBC_String *_statusDesc;
 #endif // LLBC_CFG_COMM_ENABLE_STATUS_DESC
     int _flags;
-    sint64 _extData1;
-    sint64 _extData2;
-    sint64 _extData3;
+	
+	__LLBC_COMM_PACKET_EXTDATA_MEMBER(1);
+	__LLBC_COMM_PACKET_EXTDATA_MEMBER(2);
+	__LLBC_COMM_PACKET_EXTDATA_MEMBER(3);
 
     LLBC_ICoder *_encoder;
     LLBC_ICoder *_decoder;
@@ -507,5 +493,6 @@ private:
 __LLBC_NS_END
 
 #include "llbc/comm/PacketImpl.h"
+#include "llbc/comm/PacketImpl_ExtData.h"
 
 #endif // !__LLBC_COMM_PACKET_H__

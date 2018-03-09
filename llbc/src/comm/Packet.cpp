@@ -49,9 +49,9 @@ LLBC_Packet::LLBC_Packet()
 , _statusDesc(NULL)
 #endif // LLBC_CFG_COMM_ENABLE_STATUS_DESC
 , _flags(0)
-, _extData1(0)
-, _extData2(0)
-, _extData3(0)
+, __LLBC_COMM_PACKET_EXTDATA_MEMBER_INIT(1)
+, __LLBC_COMM_PACKET_EXTDATA_MEMBER_INIT(2)
+, __LLBC_COMM_PACKET_EXTDATA_MEMBER_INIT(3)
 
 , _encoder(NULL)
 , _decoder(NULL)
