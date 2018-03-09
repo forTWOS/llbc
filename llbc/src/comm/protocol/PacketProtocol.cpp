@@ -106,7 +106,7 @@ int LLBC_PacketProtocol::Send(void *in, void *&out, bool &removeSession)
     int senderServiceId = packet->GetSenderServiceId();
     int recverServiceId = packet->GetRecverServiceId();
     uint16 flags = static_cast<uint16>(packet->GetFlags());
-    sint64 extData1 = packet->GetExtData1();
+    sint64 extData1 = packet->GetExtData1<sint64>();
 
 #if LLBC_CFG_COMM_ORDER_IS_NET_ORDER
     LLBC_Host2Net(length);
