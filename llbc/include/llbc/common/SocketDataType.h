@@ -356,8 +356,8 @@ public:
      */
     void SetDeleteDataProc(DeleteDataProc proc);
 
-	template <typename Object>
-	void SetDeleteDalegateMeth(Object *obj, void (Object::*meth)(void *));
+    template <typename Object>
+    void SetDeleteDalegateMeth(Object *obj, void (Object::*meth)(void *));
 
     /**
      * Insert overlapped.
@@ -393,9 +393,7 @@ private:
     LLBC_SocketHandle _sock;
     _OLContainer _ols;
 
-    DeleteDataProc _delDataProc;
-
-	LLBC_IDelegate1<void, void *> *_delDataMeth;
+    LLBC_IDelegate1<void, void *> *_delDataMeth;
 };
 typedef LLBC_OverlappedGroup * LLBC_POverlappedGroup;
 

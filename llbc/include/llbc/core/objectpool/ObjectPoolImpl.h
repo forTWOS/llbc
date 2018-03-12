@@ -26,82 +26,83 @@
 __LLBC_NS_BEGIN
 
 template<typename T, bool ThreadSafe>
-inline LLBC_ObjectPool<T, ThreadSafe>::LLBC_ObjectPool(sint32 reserveSize /*= LLBC_CFG_OBJECTPOOL_RESERVE_SIZE*/)
-: _reserveSize(reserveSize)
-, _lock(NULL)
-{
-	if (UNLIKELY(ThreadSafe))
-		_lock = new LLBC_SpinLock();
+inline LLBC_ObjectPool<T, ThreadSafe>::LLBC_ObjectPool(sint32 reserveSize)
+: _lock(NULL) 
 
-	_objPool.reserve(_reserveSize);
+, _reserveSize(reserveSize)
+{
+    if (UNLIKELY(ThreadSafe))
+        _lock = new LLBC_SpinLock();
+
+    _objPool.reserve(_reserveSize);
 }
 
 template<typename T, bool ThreadSafe>
 inline LLBC_ObjectPool<T, ThreadSafe>::~LLBC_ObjectPool()
 {
-	for (_Iterator iter = _objPool.begin();
-		iter != _objPool.end();
-		++iter)
-	{
-		LLBC_XDelete(*iter);
-	}
-	_objPool.clear();
-	LLBC_XDelete(_lock);
+    typedef typename std::vector<T *>::iterator _Iterator;
+    for (_Iterator iter = _objPool.begin();
+         iter != _objPool.end();
+         ++iter)
+        LLBC_XDelete(*iter);
+
+    _objPool.clear();
+    LLBC_XDelete(_lock);
 }
 
 template<typename T, bool ThreadSafe>
 inline T *LLBC_ObjectPool<T, ThreadSafe>::Pop()
 {
-	if (UNLIKELY(ThreadSafe))
-		_lock->Lock();
-	
-	T *newobj = NULL;
-	if (_objPool.empty())
-		newobj = new T();
-	else
-		newobj = _PopFromCache();
-	
-	if (UNLIKELY(ThreadSafe))
-		_lock->Unlock();
+    if (UNLIKELY(ThreadSafe))
+        _lock->Lock();
 
-	return newobj;
+    T *newobj = NULL;
+    if (_objPool.empty())
+        newobj = new T();
+    else
+        newobj = _PopFromCache();
+
+    if (UNLIKELY(ThreadSafe))
+        _lock->Unlock();
+
+    return newobj;
 }
 
 template<typename T, bool ThreadSafe>
 inline void LLBC_ObjectPool<T, ThreadSafe>::Push(T *&o)
 {
-	if (UNLIKELY(!o))
-		return;
+    if (UNLIKELY(!o))
+        return;
 
-	if (UNLIKELY(ThreadSafe))
-		_lock->Lock();
+    if (UNLIKELY(ThreadSafe))
+        _lock->Lock();
 
-	if (UNLIKELY(_objPool.size() >= _reserveSize))
-	{
-		_reserveSize *= 2;
-		_objPool.reserve(_reserveSize);
-	}
-	_objPool.push_back(o);
-	o = NULL;
+    if (UNLIKELY(_objPool.size() >= _reserveSize))
+    {
+        _reserveSize *= 2;
+        _objPool.reserve(_reserveSize);
+    }
+    _objPool.push_back(o);
+    o = NULL;
 
-	if (UNLIKELY(ThreadSafe))
-		_lock->Unlock();
+    if (UNLIKELY(ThreadSafe))
+        _lock->Unlock();
 }
 
 template<typename T, bool ThreadSafe>
 inline T *LLBC_ObjectPool<T, ThreadSafe>::_PopFromCache()
 {
-	T *obj = _objPool.back();
-	_objPool.pop_back();
-	_ReInitialize(obj);
-	return obj;
+    T *obj = _objPool.back();
+    _objPool.pop_back();
+    _ReInitialize(obj);
+    return obj;
 }
 
 template<typename T, bool ThreadSafe>
 inline void LLBC_ObjectPool<T, ThreadSafe>::_ReInitialize(T *o)
 {
-	//call object's ReInitialize func
-	o->ReInitialize();			//TODO
+    //call object's ReInitialize func
+    o->ReInitialize();
 }
 
 __LLBC_NS_END

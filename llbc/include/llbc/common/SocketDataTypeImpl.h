@@ -28,8 +28,8 @@ __LLBC_NS_BEGIN
 template <typename Object>
 inline void LLBC_OverlappedGroup::SetDeleteDalegateMeth(Object *obj, void (Object::*meth)(void *))
 {
-	if (LIKELY(!_delDataMeth))
-		_delDataMeth = new LLBC_Delegate1<void, Object, void *>(obj, meth);
+    LLBC_XDelete(_delDataMeth);
+    _delDataMeth = new LLBC_Delegate1<void, Object, void *>(obj, meth);
 }
 
 __LLBC_NS_END

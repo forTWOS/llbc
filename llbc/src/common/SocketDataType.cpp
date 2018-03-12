@@ -290,14 +290,13 @@ LLBC_OverlappedGroup::LLBC_OverlappedGroup()
 : _sock(LLBC_INVALID_SOCKET_HANDLE)
 , _ols()
 
-, _delDataProc(NULL)
 , _delDataMeth(NULL)
 {
 }
 
 LLBC_OverlappedGroup::~LLBC_OverlappedGroup()
 {
-	LLBC_Delete(_delDataMeth);
+    LLBC_XDelete(_delDataMeth);
 }
 
 LLBC_SocketHandle LLBC_OverlappedGroup::GetSocketHandle() const
@@ -312,7 +311,7 @@ void LLBC_OverlappedGroup::SetSocketHandle(LLBC_SocketHandle handle)
 
 void LLBC_OverlappedGroup::SetDeleteDataProc(DeleteDataProc proc)
 {
-    _delDataProc = proc;
+    _delDataMeth = new LLBC_Func1<void, void *>(proc);
 }
 
 void LLBC_OverlappedGroup::InsertOverlapped(LLBC_POverlapped ol)
@@ -361,19 +360,10 @@ void LLBC_OverlappedGroup::ClearOverlappedMembers(LLBC_POverlapped ol)
         ol->acceptSock = LLBC_INVALID_SOCKET_HANDLE;
     }
 
-    if (ol->data && _delDataProc)
-    {
-        (*_delDataProc)(ol->data);
-        ol->data = NULL;
-		return;
-    }
-	
-	if (ol->data && _delDataMeth)
-	{
-		_delDataMeth->Invoke(ol->data);
-		ol->data = NULL;
-		return;
-	}
+    if (_delDataMeth)
+        _delDataMeth->Invoke(ol->data);
+
+    ol->data = NULL;
 }
 
 __LLBC_NS_END

@@ -37,27 +37,25 @@ template<typename T, bool ThreadSafe = false>
 class LLBC_ObjectPool
 {
 public:
-	LLBC_ObjectPool(sint32 reserveSize = LLBC_CFG_OBJECTPOOL_RESERVE_SIZE);
-	~LLBC_ObjectPool();
+    LLBC_ObjectPool(sint32 reserveSize = LLBC_CFG_OBJECTPOOL_RESERVE_SIZE);
+    ~LLBC_ObjectPool();
 
 public:
-	T *Pop();
-	void Push(T *&o);
+    T *Pop();
+    void Push(T *&o);
 
 private:
-	T *_PopFromCache();
+    T *_PopFromCache();
 
-	void _ReInitialize(T *o);
+    void _ReInitialize(T *o);
 
 private:
-	LLBC_SpinLock *_lock;
+    LLBC_SpinLock *_lock;
 
-	size_t _reserveSize;
+    size_t _reserveSize;
 
-	typedef typename std::vector<T *> _Objects;
-	typedef typename std::vector<T *>::iterator _Iterator;
-	typedef typename std::vector<T *>::const_iterator _ConstIterator;
-	_Objects _objPool;
+    typedef typename std::vector<T *> _Objects;
+    _Objects _objPool;
 };
 
 __LLBC_NS_END

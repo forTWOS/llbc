@@ -178,10 +178,10 @@
 #define LLBC_CFG_COMM_ENABLE_UNIFY_PRESUBSCRIBE             1
 
 /**
-* \brief object pool about configs.
+* \brief Object pool about configs.
 */
 //Default object pool reserve size
-#define LLBC_CFG_OBJECTPOOL_RESERVE_SIZE					128
+#define LLBC_CFG_OBJECTPOOL_RESERVE_SIZE                    128
 
 
 // The poller model config(Platform specific).
