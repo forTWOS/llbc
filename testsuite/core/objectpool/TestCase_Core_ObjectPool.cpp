@@ -35,27 +35,27 @@ int TestCase_Core_ObjectPool::Run(int argc, char *argv[])
 {
     std::cout <<"core/objectpool test:" <<std::endl;
 
-	LLBC_ObjectPool < LLBC_MessageBlock, true > *objpool = new LLBC_ObjectPool<LLBC_MessageBlock, true>(3);
-	LLBC_MessageBlock *obj1 = objpool->Pop();
-	LLBC_MessageBlock *obj2 = objpool->Pop();
-	LLBC_MessageBlock *obj3 = objpool->Pop();
-	LLBC_PrintLine("obj1: %p", obj1);
-	LLBC_PrintLine("obj2: %p", obj2);
-	LLBC_PrintLine("obj3: %p", obj3);
-	objpool->Push(obj1);
-	LLBC_MessageBlock *obj4 = objpool->Pop();
-	LLBC_PrintLine("obj4: %p", obj4);
-	LLBC_MessageBlock *obj5 = objpool->Pop();
-	LLBC_PrintLine("obj5: %p", obj5);
-	objpool->Push(obj1);
-	objpool->Push(obj2);
-	objpool->Push(obj3);
-	objpool->Push(obj4);
-	objpool->Push(obj5);
-	
-	ASSERT(obj4 == obj1);
+    LLBC_ObjectPool<LLBC_MessageBlock, true> *objpool = new LLBC_ObjectPool<LLBC_MessageBlock, true>(3);
+    LLBC_MessageBlock *obj1 = objpool->Pop();
+    LLBC_MessageBlock *obj2 = objpool->Pop();
+    LLBC_MessageBlock *obj3 = objpool->Pop();
+    LLBC_PrintLine("obj1: %p", obj1);
+    LLBC_PrintLine("obj2: %p", obj2);
+    LLBC_PrintLine("obj3: %p", obj3);
+    objpool->Push(obj1);
+    LLBC_MessageBlock *obj4 = objpool->Pop();
+    LLBC_PrintLine("obj4: %p", obj4);
+    LLBC_MessageBlock *obj5 = objpool->Pop();
+    LLBC_PrintLine("obj5: %p", obj5);
+    objpool->Push(obj1);
+    objpool->Push(obj2);
+    objpool->Push(obj3);
+    objpool->Push(obj4);
+    objpool->Push(obj5);
+
+    ASSERT(obj4 == obj1);
    
-	LLBC_XDelete(objpool);
+    LLBC_XDelete(objpool);
     LLBC_PrintLine("Press any key to continue ...");
     getchar();
 

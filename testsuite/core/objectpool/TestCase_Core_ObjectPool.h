@@ -28,15 +28,11 @@ using namespace llbc;
 class TestCase_Core_ObjectPool: public LLBC_BaseTestCase
 {
 public:
-	TestCase_Core_ObjectPool();
-	virtual ~TestCase_Core_ObjectPool();
+    TestCase_Core_ObjectPool();
+    virtual ~TestCase_Core_ObjectPool();
 
 public:
     virtual int Run(int argc, char *argv[]);
-
-
-private:
-
 };
 
 #endif // !__LLBC_TEST_CASE_CORE_OBJECTPOOL_H__
