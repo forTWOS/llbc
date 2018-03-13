@@ -486,7 +486,7 @@ private:
     volatile bool _stopping;
     bool _initingFacade;
 
-    LLBC_RecursiveLock _lock;
+    LLBC_SpinLock _lock;
     LLBC_SpinLock _protoLock;
 
     int _fps;
