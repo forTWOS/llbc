@@ -72,7 +72,7 @@ int TestSuite_Main(int argc, char *argv[])
     // test = new TestCase_Core_Entity;
     // test = new TestCase_Core_Transcoder;
     // test = new TestCase_Core_Library;
-	test = new TestCase_Core_ObjectPool;
+	//test = new TestCase_Core_ObjectPool;
 
     /* ObjBase module testcases. */
 #if LLBC_CFG_OBJBASE_ENABLED
@@ -92,13 +92,13 @@ int TestSuite_Main(int argc, char *argv[])
     // test = new TestCase_Comm_SvcBase;
     // test = new TestCase_Comm_SvcFps;
     // test = new TestCase_Comm_SvcStartStop;
-    // test = new TestCase_Comm_Svc;
+     test = new TestCase_Comm_Svc;
     // test = new TestCase_Comm_SendBytes;
     // test = new TestCase_Comm_Multicast;
     // test = new TestCase_Comm_ExternalDriveSvc;
     // test = new TestCase_Comm_LazyTask;
 
-    // test = new TestCase_App_AppTest;
+     //test = new TestCase_App_AppTest;
 
     int ret = LLBC_FAILED;
     if (test)

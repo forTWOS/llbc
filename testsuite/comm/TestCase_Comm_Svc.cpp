@@ -21,13 +21,14 @@
 
 
 #include "comm/TestCase_Comm_Svc.h"
+#include "llbc/comm/SamplerFacade.h"
 
 namespace
 {
 
 const int OPCODE = 0;
 
-class TestFacade : public LLBC_IFacade
+class TestFacade : public LLBC_SamplerFacade
 {
 public:
     TestFacade()
