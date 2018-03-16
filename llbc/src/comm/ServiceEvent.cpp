@@ -158,7 +158,7 @@ LLBC_SvcEv_PacketSamplerEv::~LLBC_SvcEv_PacketSamplerEv()
 }
 
 LLBC_SvcEv_NetWorkFlowSamplerEv::LLBC_SvcEv_NetWorkFlowSamplerEv(bool send)
-: Base(_EvType::NetWorkFlowEv)
+: Base(_EvType::NetFlowSamplerEv)
 , isSend(send)
 , len(0)
 {

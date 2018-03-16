@@ -23,8 +23,12 @@
 #define __LLBC_COMM_SAMPLER_FACADE_H__
 
 #include "llbc/common/Common.h"
-#include "llbc/comm/Comm.h"
-#include "llbc/core/sampler/SamplerType.h"
+#include "llbc/core/Core.h"
+#include "llbc/objbase/ObjBase.h"
+
+#if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
+
+#include "llbc/comm/IFacade.h"
 
 __LLBC_NS_BEGIN
 
@@ -62,3 +66,4 @@ private:
 __LLBC_NS_END
 
 #endif // !__LLBC_COMM_SAMPLER_FACADE_H__
+#endif // LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT

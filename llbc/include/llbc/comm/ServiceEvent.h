@@ -60,7 +60,7 @@ public:
         FireEv,
 
         SendSamplerEv,
-        NetWorkFlowEv,
+        NetFlowSamplerEv,
 
         End
     };

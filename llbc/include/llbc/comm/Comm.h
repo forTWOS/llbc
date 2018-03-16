@@ -31,6 +31,7 @@
 #include "llbc/comm/Packet.h"
 #include "llbc/comm/ICoder.h"
 #include "llbc/comm/IFacade.h"
+#include "llbc/comm/facade/SamplerFacade.h"
 #include "llbc/comm/PollerType.h"
 #include "llbc/comm/BasePoller.h"
 #include "llbc/comm/IService.h"

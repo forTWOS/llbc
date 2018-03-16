@@ -23,8 +23,9 @@
 #include "llbc/common/Export.h"
 #include "llbc/common/BeforeIncl.h"
 
-#include "llbc/comm/SamplerFacade.h"
+#include "llbc/comm/facade/SamplerFacade.h"
 
+#if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
 
 namespace
 {
@@ -107,4 +108,5 @@ void LLBC_SamplerFacade::OnNetWorkFlowSampling(bool isSend, size_t len)
 
 __LLBC_NS_END
 
+#endif // LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
 #include "llbc/common/AfterIncl.h"

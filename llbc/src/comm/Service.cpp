@@ -32,7 +32,7 @@
 #include "llbc/comm/protocol/NormalProtocolFactory.h"
 #include "llbc/comm/Service.h"
 #include "llbc/comm/ServiceMgr.h"
-#include "llbc/comm/SamplerFacade.h"
+#include "llbc/comm/facade/SamplerFacade.h"
 
 namespace
 {
