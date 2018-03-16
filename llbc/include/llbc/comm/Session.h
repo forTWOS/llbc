@@ -262,25 +262,32 @@ public:
     bool OnRecved(LLBC_MessageBlock *block);
 
 public:
-	/*
-	* Alloc MessageBlock from ObjectPool
-	* @return LLBC_MessageBlock *
-	*/
-	LLBC_MessageBlock *AllocMessageBlock();
-	
-	/*
-	* Free MessageBlock for ObjectPool
-	* @param[in] block - Need free MessageBlock ptr
-	*/
-	void FreeMessageBlock(LLBC_MessageBlock *block);
+    /*
+    * Alloc MessageBlock from ObjectPool
+    * @return LLBC_MessageBlock *
+    */
+    LLBC_MessageBlock *AllocMessageBlock();
 
-	/*
-	* Use guard to free MessageBlock for ObjectPool
-	* @param[in] data - Need free MessageBlock ptr
-	*/
-	void GuardFreeMessageBlock(void *data);
+    /*
+    * Free MessageBlock for ObjectPool
+    * @param[in] block - Need free MessageBlock ptr
+    */
+    void FreeMessageBlock(LLBC_MessageBlock *block);
 
-	MessageBlockPool *GetMessageBlockPool();
+    /*
+    * Use guard to free MessageBlock for ObjectPool
+    * @param[in] data - Need free MessageBlock ptr
+    */
+    void GuardFreeMessageBlock(void *data);
+
+    MessageBlockPool *GetMessageBlockPool();
+
+public:
+    /*
+    * Build a send packet sampler event for service
+    * @param[in] pkt - sampling packet
+    */
+    void SamplerSendPacket(LLBC_Packet * pkt);
 
 private:
     int _id;
@@ -296,7 +303,7 @@ private:
 
     int _pollerType;
 
-	MessageBlockPool *_messagePool;
+    MessageBlockPool *_messagePool;
 };
 
 __LLBC_NS_END

@@ -396,6 +396,18 @@ void LLBC_Packet::CleanupPreHandleResult()
     }
 }
 
+LLBC_SamplerBaseInfo *LLBC_Packet::MakeSamplerInfo(bool send)
+{
+    LLBC_SamplerInfo_PacketSendRecv *samplerInfo = new LLBC_SamplerInfo_PacketSendRecv(send);
+    samplerInfo->recverSvcId = _recverSvcId;
+    samplerInfo->senderSvcId = _senderSvcId;
+    samplerInfo->sessionId = _senderSvcId;
+    samplerInfo->opcode = _opcode;
+    samplerInfo->len = _length;
+
+    return samplerInfo;
+}
+
 __LLBC_NS_END
 
 #include "llbc/common/AfterIncl.h"

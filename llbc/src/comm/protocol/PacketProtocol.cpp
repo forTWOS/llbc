@@ -128,6 +128,12 @@ int LLBC_PacketProtocol::Send(void *in, void *&out, bool &removeSession)
 
     // Write packet data and delete packet.
     block->Write(packet->GetPayload(), packet->GetPayloadLength());
+
+#if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
+    packet->SetLength(block->GetWritePos());
+    _session->SamplerSendPacket(packet);
+#endif
+
     LLBC_Delete(packet);
 
     out = block;

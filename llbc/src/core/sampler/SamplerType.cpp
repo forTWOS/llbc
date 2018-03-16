@@ -24,12 +24,80 @@
 
 #include "llbc/core/sampler/SamplerType.h"
 
+namespace
+{
+    typedef LLBC_NS LLBC_SamplerBaseInfo Base;
+}
+
 __LLBC_NS_BEGIN
 
 bool LLBC_SamplerType::IsValid(int type)
 {
     return (type >= LLBC_SamplerType::Begin && 
         type < LLBC_SamplerType::End) ? true : false;
+}
+
+LLBC_SamplerBaseInfo::LLBC_SamplerBaseInfo(int type)
+: type(type)
+, tm(LLBC_Time::Now())
+{
+}
+
+LLBC_SamplerBaseInfo::~LLBC_SamplerBaseInfo()
+{
+}
+
+LLBC_SamplerInfo_SessionCreateDestroy::LLBC_SamplerInfo_SessionCreateDestroy(bool create)
+: Base(LLBC_SamplerInfoType::SessionSamplerInfo)
+, isCreate(create)
+{
+}
+
+LLBC_SamplerInfo_SessionCreateDestroy::~LLBC_SamplerInfo_SessionCreateDestroy()
+{
+}
+
+LLBC_String LLBC_SamplerInfo_SessionCreateDestroy::ToString() const
+{
+    LLBC_String retStr;
+    retStr.append_format("%s, ", tm.Format().c_str())
+          .append_format("samplerType:%d, ", type)
+          .append_format("serviceId:%d, ", svcId)
+          .append_format("serviceName:%s, ", svcName.c_str())
+          .append_format("%s, ", isCreate ? "sessionCreate" : "sessionDestroy")
+          .append_format("isListen:%s, ", isListen ? "true" : "false")
+          .append_format("sessionId:%d, ", sessionId)
+          .append_format("acceptSessionId:%d, ", acceptSessionId)
+          .append_format("localAddr:%s, ", localAddr.c_str())
+          .append_format("localAddr:%s, ", peerAddr.c_str())
+          .append_format("handle:%d", sockHandle);
+
+    return retStr;
+}
+
+LLBC_SamplerInfo_PacketSendRecv::LLBC_SamplerInfo_PacketSendRecv(bool send)
+: Base(LLBC_SamplerInfoType::PacketSamplerInfo)
+, isSend(send)
+{
+}
+
+LLBC_SamplerInfo_PacketSendRecv::~LLBC_SamplerInfo_PacketSendRecv()
+{
+}
+
+LLBC_String LLBC_SamplerInfo_PacketSendRecv::ToString() const
+{
+    LLBC_String retStr;
+    retStr.append_format("%s, ", tm.Format().c_str())
+          .append_format("samplerType:%d, ", type)
+          .append_format("%s, ", isSend ? "sendPacket" : "recvPacket")
+          .append_format("recverSvcId:%d, ", recverSvcId)
+          .append_format("senderSvcId:%d, ", senderSvcId)
+          .append_format("sessionId:%d, ", sessionId)
+          .append_format("opcode:%d,  ", opcode)
+          .append_format("packeLen:%u", len);
+
+    return retStr;
 }
 
 __LLBC_NS_END

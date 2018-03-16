@@ -398,6 +398,38 @@ public:
      */
     virtual void OnUnHandledPacket(const LLBC_Packet &packet);
 
+public:
+    /*
+    * For sampling session create info
+    * @param[in] samplerInfo - the sample info.
+    */
+    virtual void OnSessionCreateSampling(LLBC_SamplerBaseInfo *samplerInfo);
+
+    /*
+    * For sampling session destory info
+    * @param[in] samplerInfo - the sample info.
+    */
+    virtual void OnSessionDestroySampling(LLBC_SamplerBaseInfo *samplerInfo);
+    
+    /*
+    * For sampling recv packet info
+    * @param[in] samplerInfo - the sample info.
+    */
+    virtual void OnPacketRecvSampling(LLBC_SamplerBaseInfo *samplerInfo);
+
+    /*
+    * For sampling send packet info
+    * @param[in] samplerInfo - the sample info.
+    */
+    virtual void OnPacketSendSampling(LLBC_SamplerBaseInfo *samplerInfo);
+
+    /*
+    * For sampling network flow info
+    * @param[in] isSend - true identify send bytes len, otherwise identify recv
+    * @param[len] len - bytes len
+    */
+    virtual void OnNetWorkFlowSampling(bool isSend, size_t len);
+
 private:
     /**
      * Friend class: LLBC_Service.

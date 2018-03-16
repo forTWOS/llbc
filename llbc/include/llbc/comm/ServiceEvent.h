@@ -59,6 +59,9 @@ public:
         UnsubscribeEv,
         FireEv,
 
+        SendSamplerEv,
+        NetWorkFlowEv,
+
         End
     };
 };
@@ -186,6 +189,29 @@ struct LLBC_HIDDEN LLBC_SvcEv_FireEv : public LLBC_ServiceEvent
 };
 
 /**
+* \brief The packet send sampler event structure enapsulation.
+*/
+struct LLBC_HIDDEN LLBC_SvcEv_PacketSamplerEv : public LLBC_ServiceEvent
+{
+    LLBC_SamplerBaseInfo *samplerInfo;
+
+    LLBC_SvcEv_PacketSamplerEv();
+    virtual ~LLBC_SvcEv_PacketSamplerEv();
+};
+
+/**
+* \brief The network flow sampler event structure enapsulation.
+*/
+struct LLBC_HIDDEN LLBC_SvcEv_NetWorkFlowSamplerEv : public LLBC_ServiceEvent
+{
+    bool isSend;
+    size_t len;
+
+    LLBC_SvcEv_NetWorkFlowSamplerEv(bool send = true);
+    virtual ~LLBC_SvcEv_NetWorkFlowSamplerEv();
+};
+
+/**
  * \brief The service event util class encapsulation.
  *        Use for Build/Destroy service events.
  */
@@ -251,6 +277,16 @@ public:
      * Build fire-event event.
      */
     static LLBC_MessageBlock *BuildFireEvEv(LLBC_Event *ev);
+
+    /**
+    * Build packet sampler event.
+    */
+    static LLBC_MessageBlock *BuildPacketSamplerEvEv(LLBC_SamplerBaseInfo *samplerInfo);
+
+    /**
+    * Build network flow sampler event.
+    */
+    static LLBC_MessageBlock *BuildNetWorkFlowSamplerEvEv(bool send, size_t len);
 
 public:
     /**

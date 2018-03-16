@@ -32,6 +32,7 @@
 #include "llbc/comm/protocol/NormalProtocolFactory.h"
 #include "llbc/comm/Service.h"
 #include "llbc/comm/ServiceMgr.h"
+#include "llbc/comm/SamplerFacade.h"
 
 namespace
 {
@@ -62,7 +63,10 @@ LLBC_Service::_EvHandler LLBC_Service::_evHandlers[LLBC_SvcEvType::End] =
 
     &LLBC_Service::HandleEv_SubscribeEv,
     &LLBC_Service::HandleEv_UnsubscribeEv,
-    &LLBC_Service::HandleEv_FireEv
+    &LLBC_Service::HandleEv_FireEv,
+
+    &LLBC_Service::HandleEv_SendSamplerEv,
+    &LLBC_Service::HandleEv_NetWorkFlowSamplerEv,
 };
 
 // VS2005 and later version compiler support initialize array in construct list.
@@ -1251,6 +1255,25 @@ void LLBC_Service::HandleEv_SessionCreate(LLBC_ServiceEvent &_)
          it != _facades.end();
          it++)
         (*it)->OnSessionCreate(info);
+
+#if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
+    //For session sampling
+    typedef LLBC_SamplerInfo_SessionCreateDestroy SessionCreateSamplerInfo;
+    SessionCreateSamplerInfo samplerInfo;
+    samplerInfo.svcId = _id;
+    samplerInfo.svcName = _name;
+    samplerInfo.isListen = ev.isListen;
+    samplerInfo.sessionId = ev.sessionId;
+    samplerInfo.acceptSessionId = ev.acceptSessionId;
+    samplerInfo.localAddr = ev.local.ToString();
+    samplerInfo.peerAddr = ev.peer.ToString();
+    samplerInfo.sockHandle = ev.handle;
+
+    for (_Facades::iterator it = _facades.begin();
+        it != _facades.end();
+        it++)
+        (*it)->OnSessionCreateSampling(&samplerInfo);
+#endif
 }
 
 void LLBC_Service::HandleEv_SessionDestroy(LLBC_ServiceEvent &_)
@@ -1285,6 +1308,25 @@ void LLBC_Service::HandleEv_SessionDestroy(LLBC_ServiceEvent &_)
     // Remove session protocol factory.
     if (ev.acceptSessionId == 0)
         RemoveSessionProtocolFactory(ev.sessionId);
+
+#if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
+    //For session sampling
+    typedef LLBC_SamplerInfo_SessionCreateDestroy SessionDestroySamplerInfo;
+    SessionDestroySamplerInfo samplerInfo;
+    samplerInfo.svcId = _id;
+    samplerInfo.svcName = _name;
+    samplerInfo.isListen = ev.isListen;
+    samplerInfo.sessionId = ev.sessionId;
+    samplerInfo.acceptSessionId = ev.acceptSessionId;
+    samplerInfo.localAddr = ev.local.ToString();
+    samplerInfo.peerAddr = ev.peer.ToString();
+    samplerInfo.sockHandle = ev.handle;
+
+    for (_Facades::iterator it = _facades.begin();
+        it != _facades.end();
+        it++)
+        (*it)->OnSessionDestroySampling(&samplerInfo);
+#endif
 }
 
 void LLBC_Service::HandleEv_AsyncConnResult(LLBC_ServiceEvent &_)
@@ -1419,6 +1461,15 @@ void LLBC_Service::HandleEv_DataArrival(LLBC_ServiceEvent &_)
              facadeIt++)
             (*facadeIt)->OnUnHandledPacket(*packet);
     }
+
+#if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
+    LLBC_SamplerBaseInfo *samplerInfo = packet->MakeSamplerInfo(false);
+    for (_Facades::iterator facadeIt = _facades.begin();
+        facadeIt != _facades.end();
+        facadeIt++)
+        (*facadeIt)->OnPacketRecvSampling(samplerInfo);
+    LLBC_XDelete(samplerInfo);
+#endif
 }
 
 void LLBC_Service::HandleEv_ProtoReport(LLBC_ServiceEvent &_)
@@ -1466,6 +1517,33 @@ void LLBC_Service::HandleEv_FireEv(LLBC_ServiceEvent &_)
 
     _evManager.FireEvent(ev.ev);
     ev.ev = NULL;
+}
+
+void LLBC_Service::HandleEv_SendSamplerEv(LLBC_ServiceEvent &_)
+{
+    typedef LLBC_SvcEv_PacketSamplerEv _Ev;
+    _Ev &ev = static_cast<_Ev &>(_);
+
+    LLBC_SamplerBaseInfo *samplerInfo = ev.samplerInfo;
+    ev.samplerInfo = NULL;
+
+    for (_Facades::iterator facadeIt = _facades.begin();
+        facadeIt != _facades.end();
+        facadeIt++)
+        (*facadeIt)->OnPacketSendSampling(samplerInfo);
+    
+    LLBC_XDelete(samplerInfo);
+}
+
+void LLBC_Service::HandleEv_NetWorkFlowSamplerEv(LLBC_ServiceEvent &_)
+{
+    typedef LLBC_SvcEv_NetWorkFlowSamplerEv _Ev;
+    _Ev &ev = static_cast<_Ev &>(_);
+
+    for (_Facades::iterator facadeIt = _facades.begin();
+        facadeIt != _facades.end();
+        facadeIt++)
+        (*facadeIt)->OnNetWorkFlowSampling(ev.isSend, ev.len);
 }
 
 void LLBC_Service::InitFacades()

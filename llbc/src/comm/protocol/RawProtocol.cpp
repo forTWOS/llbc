@@ -55,10 +55,15 @@ int LLBC_RawProtocol::Send(void *in, void *&out, bool &removeSession)
 {
     LLBC_Packet *packet = reinterpret_cast<LLBC_Packet *>(in);
 
-	LLBC_MessageBlock *block = _session->AllocMessageBlock();
-	block->Write(packet->GetPayload(), packet->GetPayloadLength());
-	LLBC_Delete(packet);
-	out = block;
+#if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
+    packet->SetLength(packet->GetPayloadLength());
+    _session->SamplerSendPacket(packet);
+#endif
+
+    LLBC_MessageBlock *block = _session->AllocMessageBlock();
+    block->Write(packet->GetPayload(), packet->GetPayloadLength());
+    LLBC_Delete(packet);
+    out = block;
 
     return LLBC_OK;
 }

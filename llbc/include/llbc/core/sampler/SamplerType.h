@@ -23,6 +23,7 @@
 #define __LLBC_CORE_SAMPLER_SAMPLER_TYPE_H__
 
 #include "llbc/common/Common.h"
+#include "llbc/core/time/Time.h"
 
 __LLBC_NS_BEGIN
 
@@ -48,6 +49,67 @@ public:
      * @return bool - return true if validate, otherwise return false.
      */
     static bool IsValid(int type);
+};
+
+/**
+* \brief The sampler info type enumeration.
+*/
+struct LLBC_HIDDEN LLBC_SamplerInfoType
+{
+public:
+    enum
+    {
+        Begin,
+
+        SessionSamplerInfo = Begin,
+        PacketSamplerInfo,
+
+        End
+    };
+};
+
+struct LLBC_HIDDEN LLBC_SamplerBaseInfo
+{
+    sint32 type;
+    LLBC_Time tm;
+
+    LLBC_SamplerBaseInfo(sint32 type);
+    virtual ~LLBC_SamplerBaseInfo();
+
+    virtual LLBC_String ToString() const = 0;
+};
+
+struct LLBC_HIDDEN LLBC_SamplerInfo_SessionCreateDestroy : public LLBC_SamplerBaseInfo
+{
+    bool isCreate;
+    sint32 svcId;
+    LLBC_String svcName;
+    bool isListen;
+    sint32 sessionId;
+    sint32 acceptSessionId;
+    LLBC_String localAddr;
+    LLBC_String peerAddr;
+    LLBC_SocketHandle sockHandle;
+
+    LLBC_SamplerInfo_SessionCreateDestroy(bool create = true);
+    virtual ~LLBC_SamplerInfo_SessionCreateDestroy();
+
+    virtual LLBC_String ToString() const;
+};
+
+struct LLBC_HIDDEN LLBC_SamplerInfo_PacketSendRecv : public LLBC_SamplerBaseInfo
+{
+    bool isSend;
+    sint32 recverSvcId;
+    sint32 senderSvcId;
+    sint32 sessionId;
+    sint32 opcode;
+    uint32 len;
+
+    LLBC_SamplerInfo_PacketSendRecv(bool send = true);
+    virtual ~LLBC_SamplerInfo_PacketSendRecv();
+
+    virtual LLBC_String ToString() const;
 };
 
 __LLBC_NS_END

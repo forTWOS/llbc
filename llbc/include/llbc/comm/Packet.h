@@ -437,6 +437,14 @@ public:
      */
     void SetCodecError(const LLBC_String &codecErr);
 
+public:
+    /*
+    * Make packet sampler info for sampler
+    * @param[in] send - indicate send packet or recv packet sampler info
+    * @return LLBC_SamplerBaseInfo * - the sampler info ptr
+    */
+    LLBC_SamplerBaseInfo *MakeSamplerInfo(bool send = true);
+
 private:
     /**
      * Read raw type data from packet.

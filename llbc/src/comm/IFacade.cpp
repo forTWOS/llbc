@@ -384,6 +384,26 @@ void LLBC_IFacade::OnUnHandledPacket(const LLBC_Packet &packet)
 {
 }
 
+void LLBC_IFacade::OnSessionCreateSampling(LLBC_SamplerBaseInfo *samplerInfo)
+{
+}
+
+void LLBC_IFacade::OnSessionDestroySampling(LLBC_SamplerBaseInfo *samplerInfo)
+{
+}
+
+void LLBC_IFacade::OnPacketRecvSampling(LLBC_SamplerBaseInfo *samplerInfo)
+{
+}
+
+void LLBC_IFacade::OnPacketSendSampling(LLBC_SamplerBaseInfo *samplerInfo)
+{
+}
+
+void LLBC_IFacade::OnNetWorkFlowSampling(bool isSend, size_t len)
+{
+}
+
 void LLBC_IFacade::SetService(LLBC_IService *svc)
 {
     _svc = svc;

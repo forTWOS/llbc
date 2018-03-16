@@ -146,6 +146,28 @@ LLBC_SvcEv_FireEv::~LLBC_SvcEv_FireEv()
     LLBC_XDelete(ev);
 }
 
+LLBC_SvcEv_PacketSamplerEv::LLBC_SvcEv_PacketSamplerEv()
+: Base(_EvType::SendSamplerEv)
+, samplerInfo(NULL)
+{
+}
+
+LLBC_SvcEv_PacketSamplerEv::~LLBC_SvcEv_PacketSamplerEv()
+{
+    LLBC_XDelete(samplerInfo);
+}
+
+LLBC_SvcEv_NetWorkFlowSamplerEv::LLBC_SvcEv_NetWorkFlowSamplerEv(bool send)
+: Base(_EvType::NetWorkFlowEv)
+, isSend(send)
+, len(0)
+{
+}
+
+LLBC_SvcEv_NetWorkFlowSamplerEv::~LLBC_SvcEv_NetWorkFlowSamplerEv()
+{
+}
+
 LLBC_MessageBlock *LLBC_SvcEvUtil::BuildSessionCreateEv(const LLBC_SockAddr_IN &local,
                                                         const LLBC_SockAddr_IN &peer,
                                                         bool isListen,
@@ -266,6 +288,26 @@ LLBC_MessageBlock *LLBC_SvcEvUtil::BuildFireEvEv(LLBC_Event *ev)
     wrapEv->ev = ev;
 
     return __CreateEvBlock(wrapEv);
+}
+
+LLBC_MessageBlock *LLBC_SvcEvUtil::BuildPacketSamplerEvEv(LLBC_SamplerBaseInfo *samplerInfo)
+{
+    typedef LLBC_SvcEv_PacketSamplerEv _Ev;
+
+    _Ev *ev = LLBC_New(_Ev);
+    ev->samplerInfo = samplerInfo;
+
+    return __CreateEvBlock(ev);
+}
+
+LLBC_MessageBlock *LLBC_SvcEvUtil::BuildNetWorkFlowSamplerEvEv(bool send, size_t len)
+{
+    typedef LLBC_SvcEv_NetWorkFlowSamplerEv _Ev;
+    
+    _Ev *ev = LLBC_New1(_Ev,send);
+    ev->len = len;
+
+    return __CreateEvBlock(ev);
 }
 
 void LLBC_SvcEvUtil::DestroyEvBlock(LLBC_MessageBlock *block)
