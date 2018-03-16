@@ -19,16 +19,18 @@
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
 #include "comm/TestCase_Comm_Svc.h"
-#include "llbc/comm/SamplerFacade.h"
 
 namespace
 {
 
 const int OPCODE = 0;
 
+#if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
 class TestFacade : public LLBC_SamplerFacade
+#else
+class TestFacade : public LLBC_IFacade
+#endif
 {
 public:
     TestFacade()

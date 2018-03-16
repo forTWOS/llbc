@@ -139,57 +139,57 @@ int TestCase_Comm_PacketOp::Run(int argc, char *argv[])
     std::cout <<"Delete prehandle test packet" <<std::endl;
     LLBC_XDelete(preHandleTestPacket);
 
-	//packet extdata test
-	LLBC_Packet packet3;
-	bool boolExtVal = false;
-	sint8 sint8ExtVal = 256;
-	uint8 uint8ExtVal = 255;
-	sint16 sint16ExtVal = -16;
-	uint16 uint16ExtVal = 16;
-	sint32 sint32ExtVal = -32;
-	uint32 uint32ExtVal = 32;
-	sint64 sint64ExtVal = -64;
-	uint64 uint64ExtVal = 64;
-	float floatExtVal = 10.24;
-	double doubleExtVal = 100.24;
+    //packet extdata test
+    LLBC_Packet packet3;
+    bool boolExtVal = false;
+    sint8 sint8ExtVal = 256;
+    uint8 uint8ExtVal = 255;
+    sint16 sint16ExtVal = -16;
+    uint16 uint16ExtVal = 16;
+    sint32 sint32ExtVal = -32;
+    uint32 uint32ExtVal = 32;
+    sint64 sint64ExtVal = -64;
+    uint64 uint64ExtVal = 64;
+    float floatExtVal = 10.24f;
+    double doubleExtVal = 100.24;
 
-	packet3.SetExtData1(boolExtVal);
-	boolExtVal = packet3.GetExtData1<bool>();
+    packet3.SetExtData1(boolExtVal);
+    boolExtVal = packet3.GetExtData1<bool>();
+
+    packet3.SetExtData1(sint8ExtVal);
+    sint8ExtVal = packet3.GetExtData1<sint8>();
     
-	packet3.SetExtData1(sint8ExtVal);
-	sint8ExtVal = packet3.GetExtData1<sint8>();
+    packet3.SetExtData1(uint8ExtVal);
+    uint8ExtVal = packet3.GetExtData1<uint8>();
 
-	packet3.SetExtData1(uint8ExtVal);
-	uint8ExtVal = packet3.GetExtData1<uint8>();
+    packet3.SetExtData1(sint16ExtVal);
+    sint16ExtVal = packet3.GetExtData1<sint16>();
 
-	packet3.SetExtData1(sint16ExtVal);
-	sint16ExtVal = packet3.GetExtData1<sint16>();
+    packet3.SetExtData1(uint16ExtVal);	
+    uint16ExtVal = packet3.GetExtData1<uint16>();
 
-	packet3.SetExtData1(uint16ExtVal);	
-	uint16ExtVal = packet3.GetExtData1<uint16>();
+    packet3.SetExtData1(sint32ExtVal);
+    sint32ExtVal = packet3.GetExtData1<sint32>();
 
-	packet3.SetExtData1(sint32ExtVal);
-	sint32ExtVal = packet3.GetExtData1<sint32>();
+    packet3.SetExtData1(uint32ExtVal);
+    uint32ExtVal = packet3.GetExtData1<uint32>();
 
-	packet3.SetExtData1(uint32ExtVal);
-	uint32ExtVal = packet3.GetExtData1<uint32>();
+    packet3.SetExtData1(sint64ExtVal);
+    sint64ExtVal = packet3.GetExtData1<sint64>();
 
-	packet3.SetExtData1(sint64ExtVal);
-	sint64ExtVal = packet3.GetExtData1<sint64>();
+    packet3.SetExtData1(uint64ExtVal);
+    uint64ExtVal = packet3.GetExtData1<uint64>();
 
-	packet3.SetExtData1(uint64ExtVal);
-	uint64ExtVal = packet3.GetExtData1<uint64>();
+    packet3.SetExtData1(floatExtVal);
+    floatExtVal = packet3.GetExtData1<float>();
 
-	packet3.SetExtData1(floatExtVal);
-	floatExtVal = packet3.GetExtData1<float>();
-
-	packet3.SetExtData1(doubleExtVal);
-	doubleExtVal = packet3.GetExtData1<double>();
+    packet3.SetExtData1(doubleExtVal);
+    doubleExtVal = packet3.GetExtData1<double>();
 
     std::cout << std::endl << "Packet extdata test: " << std::endl;
-	std::cout << "boolExtVal " << boolExtVal << " sint8ExtVal " << sint8ExtVal << "  uint8ExtVal " << uint8ExtVal << " sint16ExtVal " << sint16ExtVal
-		<< " uint16ExtVal " << uint16ExtVal << " sint32ExtVal " << sint32ExtVal << " uint32ExtVal " << uint32ExtVal << " sint64ExtVal " << sint64ExtVal
-		<< " uint64ExtVal " << uint64ExtVal << " floatExtVal " << floatExtVal << " doubleExtVal " << doubleExtVal;
+    std::cout << "boolExtVal " << boolExtVal << " sint8ExtVal " << sint8ExtVal << "  uint8ExtVal " << uint8ExtVal << " sint16ExtVal " << sint16ExtVal
+        << " uint16ExtVal " << uint16ExtVal << " sint32ExtVal " << sint32ExtVal << " uint32ExtVal " << uint32ExtVal << " sint64ExtVal " << sint64ExtVal
+        << " uint64ExtVal " << uint64ExtVal << " floatExtVal " << floatExtVal << " doubleExtVal " << doubleExtVal;
     std::cout << "Packet extdata end " << std::endl << std::endl;
 
     std::cout <<"Press any key to continue ...";
