@@ -37,6 +37,22 @@ This *LLBC_IService::Create(Type type, const LLBC_String &name, LLBC_IProtocolFa
     return LLBC_New3(LLBC_Service, type, name, protoFactory);
 }
 
+#if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
+int LLBC_IService::PushSamplerMsg(LLBC_MessageBlock *block)
+{
+    _samplerMsgQueue.PushBack(block);
+    return LLBC_OK;
+}
+
+int LLBC_IService::TryPopSamplerMsg(LLBC_MessageBlock *&block)
+{
+    if (_samplerMsgQueue.TryPopFront(block))
+        return LLBC_OK;
+
+    return LLBC_FAILED;
+}
+#endif
+
 __LLBC_NS_END
 
 #include "llbc/common/AfterIncl.h"

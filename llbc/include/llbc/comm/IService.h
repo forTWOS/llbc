@@ -496,6 +496,23 @@ public:
      */
     virtual void OnSvc(bool fullFrame = true) = 0;
 
+#if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
+public:
+    /**
+    * Push sampling message block to queue.
+    * @param[in] block - message block.
+    * @return int - return 0 if success, otherwise return -1.
+    */
+    virtual int PushSamplerMsg(LLBC_MessageBlock *block);
+
+    /**
+    * Try pop sampling message block from queue.
+    * @param[out] block - message block.
+    * @return int - return 0 if success, otherwise return -1.
+    */
+    virtual int TryPopSamplerMsg(LLBC_MessageBlock *&block);
+#endif
+
 protected:
     /**
      * Declare friend class: LLBC_Session.
@@ -511,6 +528,11 @@ protected:
     virtual LLBC_ProtocolStack *CreatePackStack(int sessionId, int acceptSessionId = 0, LLBC_ProtocolStack *stack = NULL) = 0;
     virtual LLBC_ProtocolStack *CreateCodecStack(int sessionId, int acceptSessionId = 0, LLBC_ProtocolStack *stack = NULL) = 0;
     virtual LLBC_ProtocolStack *CreateFullStack(int sessionId, int acceptSessionId = 0) = 0;
+
+#if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
+private:
+    LLBC_MessageQueue _samplerMsgQueue;
+#endif
 };
 
 __LLBC_NS_END

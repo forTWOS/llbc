@@ -994,6 +994,11 @@ void LLBC_Service::OnSvc(bool fullFrame)
     // Process queued events.
     HandleQueuedEvents();
 
+#if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
+    // Process sample queued events
+    HandleSamplerQueuedEvents();
+#endif
+
     // Update all components.
     UpdateFacades();
     UpdateTimers();
@@ -1140,6 +1145,12 @@ void LLBC_Service::Cleanup()
     while (TryPop(block) == LLBC_OK)
         LLBC_SvcEvUtil::DestroyEvBlock(block);
 
+#if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
+    LLBC_MessageBlock *samplerBlock;
+    while (TryPopSamplerMsg(samplerBlock) == LLBC_OK)
+        LLBC_SvcEvUtil::DestroyEvBlock(samplerBlock);
+#endif
+
     // If is self-drive servie, notify service manager self stopped.
     if (_driveMode == This::SelfDrive)
     {
@@ -1230,6 +1241,25 @@ void LLBC_Service::HandleQueuedEvents()
         LLBC_Delete(ev);
         LLBC_Delete(block);
     }
+}
+
+void LLBC_Service::HandleSamplerQueuedEvents()
+{
+#if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
+    int type;
+    LLBC_ServiceEvent *ev;
+    LLBC_MessageBlock *block;
+    while (TryPopSamplerMsg(block) == LLBC_OK)
+    {
+        block->Read(&type, sizeof(int));
+        block->Read(&ev, sizeof(LLBC_ServiceEvent *));
+
+        (this->*_evHandlers[type])(*ev);
+
+        LLBC_Delete(ev);
+        LLBC_Delete(block);
+    }
+#endif
 }
 
 void LLBC_Service::HandleEv_SessionCreate(LLBC_ServiceEvent &_)

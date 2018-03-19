@@ -74,11 +74,11 @@ void LLBC_SamplerFacade::OnSessionDestroySampling(LLBC_SamplerBaseInfo *samplerI
     _Iter iter = _sessionId2Info->find(info->sessionId);
     if (iter == _sessionId2Info->end())
     {
-        LLBC_PrintLine("OnSessionDestroySampling fail: session %d not find, sessionInfo is %s", info->sessionId, info->ToString().c_str());
+        //LLBC_PrintLine("OnSessionDestroySampling fail: session %d not find, sessionInfo is %s", info->sessionId, info->ToString().c_str());
         return;
     }
 
-    LLBC_PrintLine("OnSessionDestroySampling success: destroy sessionInfo is %s", info->ToString().c_str());
+    //LLBC_PrintLine("OnSessionDestroySampling success: destroy sessionInfo is %s", info->ToString().c_str());
     _sessionId2Info->erase(iter);
 }
 
@@ -86,14 +86,14 @@ void LLBC_SamplerFacade::OnPacketRecvSampling(LLBC_SamplerBaseInfo *samplerInfo)
 {
     PacketRecvSamplerInfo *info = static_cast<PacketRecvSamplerInfo *>(samplerInfo);
     (*_recvOpcodeFlow)[info->opcode] += info->len;
-    LLBC_PrintLine("OnPacketRecvSampling: opcode %d flow %u", info->opcode, (*_recvOpcodeFlow)[info->opcode]);
+    //LLBC_PrintLine("OnPacketRecvSampling: opcode %d flow %u", info->opcode, (*_recvOpcodeFlow)[info->opcode]);
 }
 
 void LLBC_SamplerFacade::OnPacketSendSampling(LLBC_SamplerBaseInfo *samplerInfo)
 {
     PacketSendSamplerInfo *info = static_cast<PacketSendSamplerInfo *>(samplerInfo);
     (*_sendOpcodeFlow)[info->opcode] += info->len;
-    LLBC_PrintLine("OnPacketSendSampling: opcode %d flow %u", info->opcode, (*_sendOpcodeFlow)[info->opcode]);
+    //LLBC_PrintLine("OnPacketSendSampling: opcode %d flow %u", info->opcode, (*_sendOpcodeFlow)[info->opcode]);
 }
 
 void LLBC_SamplerFacade::OnNetWorkFlowSampling(bool isSend, size_t len)
@@ -103,7 +103,7 @@ void LLBC_SamplerFacade::OnNetWorkFlowSampling(bool isSend, size_t len)
     else
         _recvFlow += len;
 
-    LLBC_PrintLine("OnNetWorkFlowSampling: _sendFlow %u _recvFlow %u", _sendFlow, _recvFlow);
+    //LLBC_PrintLine("OnNetWorkFlowSampling: _sendFlow %u _recvFlow %u", _sendFlow, _recvFlow);
 }
 
 __LLBC_NS_END

@@ -295,14 +295,14 @@ void LLBC_Session::OnClose(LLBC_SessionCloseInfo *closeInfo)
 void LLBC_Session::OnSent(size_t len)
 {
 #if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
-    _svc->Push(LLBC_SvcEvUtil::BuildNetWorkFlowSamplerEvEv(true, len));
+    _svc->PushSamplerMsg(LLBC_SvcEvUtil::BuildNetWorkFlowSamplerEvEv(true, len));
 #endif
 }
 
 bool LLBC_Session::OnRecved(LLBC_MessageBlock *block)
 {
 #if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
-    _svc->Push(LLBC_SvcEvUtil::BuildNetWorkFlowSamplerEvEv(false, block->GetReadableSize()));
+    _svc->PushSamplerMsg(LLBC_SvcEvUtil::BuildNetWorkFlowSamplerEvEv(false, block->GetReadableSize()));
 #endif
     bool removeSession;
     std::vector<LLBC_Packet *> packets;
@@ -360,8 +360,10 @@ MessageBlockPool *LLBC_Session::GetMessageBlockPool()
 
 void LLBC_Session::SamplerSendPacket(LLBC_Packet *pkt)
 {
+#if LLBC_CFG_COMM_ENABLE_SAMPLER_SUPPORT
     LLBC_SamplerBaseInfo *samplerInfo = pkt->MakeSamplerInfo();
-    _svc->Push(LLBC_SvcEvUtil::BuildPacketSamplerEvEv(samplerInfo));
+    _svc->PushSamplerMsg(LLBC_SvcEvUtil::BuildPacketSamplerEvEv(samplerInfo));
+#endif
 }
 
 __LLBC_NS_END
